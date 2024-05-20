@@ -8,7 +8,6 @@ class TitleBar(Frame):
         self.master = master
         self.master.overrideredirect(True)
         
-        
         self.title_label = Label(self, text="My Bank", bg='#2e2e2e', fg='white', padx=10)
         self.title_label.pack(side='left', padx=10)
         
@@ -18,13 +17,9 @@ class TitleBar(Frame):
         self.bind('<B1-Motion>', self.move_window)
         self.bind('<Button-1>', self.get_pos)
 
-        
-        #self.bind('<FocusIn>', self.on_focus_in)
-        #self.bind('<FocusOut>', self.on_focus_out)
+        self.master.bind('<Map>', self.on_map)  # When the window is mapped (shown)
+        self.master.bind('<Unmap>', self.on_unmap)  # When the window is unmapped (hidden)
 
-
-        #self.after(10, self.deiconify)  # Mostra a janela após a configuração
-        
         self.pack(expand=0, fill='x')
 
     def get_pos(self, event) -> None:
@@ -34,20 +29,19 @@ class TitleBar(Frame):
     def move_window(self, event) -> None:
         x = event.x_root - self._x
         y = event.y_root - self._y
-        self.geometry(f'+{x}+{y}')
+        self.master.geometry(f'+{x}+{y}')
         
-    def on_focus_in(self, event) -> None:
-        self.after_idle(self.restore_window)
+    def on_map(self, event) -> None:
+        self.master.overrideredirect(True)
+        self.master.attributes('-topmost', True)
+        self.master.after(10, lambda: self.master.attributes('-topmost', False))
 
-    def on_focus_out(self, event) -> None:
-        self.minimize_window()
-        
-    def restore_window(self) -> None:
-        self.overrideredirect(True)
-        #self.attributes('-topmost', True)
-        #self.after(10, self.attributes, '-topmost', False)
+    def on_unmap(self, event) -> None:
+        self.master.overrideredirect(False)
 
-    def minimize_window(self) -> None:
-        self.overrideredirect(False)
-        #self.attributes('-topmost', True)
-        #self.after(10, self.attributes, '-topmost', False)
+if __name__ == "__main__":
+    root = Tk()
+    root.geometry("400x300+100+100")
+    root.config(bg="blue")
+    TitleBar(root)
+    root.mainloop()
