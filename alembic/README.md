@@ -1,5 +1,7 @@
 # Main
 
+O Alembic permite que realizemos manipulações nas estruturas do banco de dados sem que precisamos recriar o banco de dados do zero. Ele permite persistir os dados enquanto atualizamos a estrutura do banco.
+
 ## Alembic Install
 
 ```bash
