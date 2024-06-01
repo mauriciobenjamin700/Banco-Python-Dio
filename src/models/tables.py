@@ -38,7 +38,8 @@ class Account(Base):
 
     id: Mapped[int]  = mapped_column(primary_key=True)
     balance: Mapped[float] = mapped_column(Float, nullable=False)
-    id_client: Mapped[int] = mapped_column(ForeignKey("client.id"))
+    id_client: Mapped[int] = mapped_column(ForeignKey("client.id"), nullable=False)
+    id_agency: Mapped[int] = mapped_column(ForeignKey("agency.id"), nullable=False)
     
     my_client: Mapped["Client"] = relationship("Client",
                                                back_populates="my_account", 
@@ -56,6 +57,7 @@ class Agency(Base):
     id: Mapped[int] = mapped_column(primary_key=True,nullable=False)
     name: Mapped[str] = mapped_column(String(256), nullable=False)
     number: Mapped[str] = mapped_column(String(256), nullable=False, unique=True)
+    id_bank: Mapped[int] = mapped_column(ForeignKey("bank.id"), nullable=False)
     
     accounts: Mapped[List["Account"]] = relationship("Account",
                                                      back_populates="my_agency",
@@ -80,5 +82,8 @@ class Bank(Base):
                                                     )
 
 # Criando as tabelas no banco de dados (se ainda não existirem)
+def create_tables() -> None:
+    Base.metadata.create_all(engine)
 
-Base.metadata.create_all(engine)
+if __name__ == "__main__":
+    create_tables()
