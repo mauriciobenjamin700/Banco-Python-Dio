@@ -1,11 +1,14 @@
 from sqlalchemy import Integer, String, Float, ForeignKey
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 from sqlalchemy.inspection import inspect
+from typing import List
 
 if not __name__ == '__main__':
     from src.models.connection import engine
+    print("\n\nnão estou na main\n\n")
 else:
     from connection import engine
+    print("\n\nestou na main\n\n")
 
 class Base(DeclarativeBase):
     def __repr__(self) -> str:
@@ -19,12 +22,10 @@ class Base(DeclarativeBase):
 class Client(Base):
     __tablename__ = "client"
 
-    id: Mapped[int]  = mapped_column(Integer,primary_key=True,nullable=False)
-    name: Mapped[str] = mapped_column(String(30), nullable=False)
-    login: Mapped[str] = mapped_column(String(30), nullable= False, unique=True) 
-    password: Mapped[str] = mapped_column(String(30), nullable=False)
-    abacate: Mapped[str] = mapped_column(String(30), nullable=True)
-    #password = Column(String(255), unique=True, nullable=False)
+    id: Mapped[int]  = mapped_column(Integer,primary_key=True)
+    name: Mapped[str] = mapped_column(String(256), nullable=False)
+    login: Mapped[str] = mapped_column(String(256), nullable= False, unique=True) 
+    password: Mapped[str] = mapped_column(String(256), nullable=False)
     
     my_account: Mapped["Account"] = relationship("Account",
                                                  back_populates="my_client",
@@ -35,14 +36,48 @@ class Client(Base):
 class Account(Base):
     __tablename__ = "account"
 
-    account_number: Mapped[int]  = mapped_column(primary_key=True,nullable=False)
+    id: Mapped[int]  = mapped_column(primary_key=True)
     balance: Mapped[float] = mapped_column(Float, nullable=False)
     id_client: Mapped[int] = mapped_column(ForeignKey("client.id"))
     
-    my_client: Mapped["Client"] = relationship("Client",back_populates="my_account")
+    my_client: Mapped["Client"] = relationship("Client",
+                                               back_populates="my_account", 
+                                               uselist=False)
+    
+    my_agency: Mapped["Agency"] = relationship("Agency",
+                                               back_populates="accounts",
+                                               uselist=False
+                                               )
     
 
+class Agency(Base):
+    __tablename__ = "agency"
+    
+    id: Mapped[int] = mapped_column(primary_key=True,nullable=False)
+    name: Mapped[str] = mapped_column(String(256), nullable=False)
+    number: Mapped[str] = mapped_column(String(256), nullable=False, unique=True)
+    
+    accounts: Mapped[List["Account"]] = relationship("Account",
+                                                     back_populates="my_agency",
+                                                     uselist=True,
+                                                     cascade="all, delete-orphan",
+                                                    )
+    my_bank: Mapped["Bank"] = relationship("Bank",
+                                           back_populates="agencies", 
+                                           uselist=False)
 
+class Bank(Base):
+    __tablename__ = "bank"
+    
+    id: Mapped[int] = mapped_column(primary_key=True,nullable=False)
+    name: Mapped[str] = mapped_column(String(256), nullable=False)
+    number: Mapped[str] = mapped_column(String(256), nullable=False, unique=True)
+    
+    agencies: Mapped[List["Agency"]] = relationship("Agency",
+                                                     back_populates="my_bank",
+                                                     uselist=True,
+                                                     cascade="all, delete-orphan",
+                                                    )
 
 # Criando as tabelas no banco de dados (se ainda não existirem)
 
