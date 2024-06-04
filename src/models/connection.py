@@ -1,6 +1,7 @@
 from sqlalchemy import create_engine
-from os.path import abspath, dirname, join
+from sqlalchemy.orm import sessionmaker
 
+from os.path import abspath, dirname, join
 root = dirname(dirname(dirname(abspath(__file__))))
 
 # Caminho do arquivo do banco de dados SQLite
@@ -9,4 +10,5 @@ print(db_path)
 
 # Criando a engine do SQLAlchemy
 engine = create_engine(f"sqlite:///{db_path}")
+Session = sessionmaker(bind=engine)
 

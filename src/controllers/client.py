@@ -5,6 +5,7 @@ if __name__ == "__main__":
     sys.path.append(dirname(dirname(abspath(__file__))))
     
     from models.entities.client import Address, Contact, Client
+    #from models.tables import Address as Table_Address, Contact as Table_Contact, Client as Table_Client
     from controllers.funcs.validats import (validate_string, 
                                             validate_strings,
                                             validade_id)
@@ -13,13 +14,13 @@ if __name__ == "__main__":
     
 else:
     from src.models.entities.client import Address, Contact, Client
+    #from src.models.tables import Address as Table_Address, Contact as Table_Contact, Client as Table_Client
     from src.controllers.funcs.validats import (validate_string, 
                                                 validate_strings,
                                                 validade_id)
     from src.controllers.constant.errors import (ERROR_ID, 
                                                  ERROR_CONTACT, 
-                                                 ERROR_REQUIERED_FILD,
-                                                 ERROR_INSTANCE) 
+                                                 ERROR_REQUIERED_FILD) 
     
 def create_address(
     id: int,

@@ -5,10 +5,10 @@ from typing import List
 
 if not __name__ == '__main__':
     from src.models.connection import engine
-    print("\n\nnão estou na main\n\n")
+    #print("\n\nnão estou na main\n\n")
 else:
     from connection import engine
-    print("\n\nestou na main\n\n")
+    #print("\n\nestou na main\n\n")
 
 class Base(DeclarativeBase):
     def __repr__(self) -> str:
@@ -22,10 +22,11 @@ class Base(DeclarativeBase):
 class Address(Base):
     __tablename__ = "address"
     
-    id: Mapped[int]  = mapped_column(Integer,primary_key=True)
+    id: Mapped[int]  = mapped_column(Integer,primary_key=True, autoincrement=True)
     cep: Mapped[str] = mapped_column(String, nullable=False)
     street: Mapped[str] = mapped_column(String, nullable=False)
     number: Mapped[str] = mapped_column(String, nullable=False)
+    id_client: Mapped[int] = mapped_column(Integer, ForeignKey("client.id"),nullable=False)
     
     my_client: Mapped["Client"] = relationship("Client",
                                                back_populates="my_address",
@@ -35,9 +36,10 @@ class Address(Base):
 class Contact(Base):
     __tablename__ = "contact"
     
-    id: Mapped[int]  = mapped_column(Integer,primary_key=True)
+    id: Mapped[int]  = mapped_column(Integer,primary_key=True, autoincrement=True)
     phone: Mapped[str] = mapped_column(String(256), unique=True)
     email: Mapped[str] = mapped_column(String(256), unique=True)
+    id_client: Mapped[int] = mapped_column(Integer, ForeignKey("client.id"), nullable=False)
     
     my_client: Mapped["Client"] = relationship("Client",
                                                back_populates="my_contact",
@@ -47,10 +49,11 @@ class Contact(Base):
 class Client(Base):
     __tablename__ = "client"
 
-    id: Mapped[int]  = mapped_column(Integer,primary_key=True)
+    id: Mapped[int]  = mapped_column(Integer,primary_key=True, autoincrement=True)
     name: Mapped[str] = mapped_column(String(256), nullable=False)
     login: Mapped[str] = mapped_column(String(256), nullable= False, unique=True) 
     password: Mapped[str] = mapped_column(String(256), nullable=False)
+    
     
     my_account: Mapped["Account"] = relationship("Account",
                                                  back_populates="my_client",
@@ -70,7 +73,7 @@ class Client(Base):
 class Account(Base):
     __tablename__ = "account"
 
-    id: Mapped[int]  = mapped_column(primary_key=True)
+    id: Mapped[int]  = mapped_column(primary_key=True, autoincrement=True)
     balance: Mapped[float] = mapped_column(Float, nullable=False)
     id_client: Mapped[int] = mapped_column(ForeignKey("client.id"), nullable=False)
     id_agency: Mapped[int] = mapped_column(ForeignKey("agency.id"), nullable=False)
@@ -88,7 +91,7 @@ class Account(Base):
 class Agency(Base):
     __tablename__ = "agency"
     
-    id: Mapped[int] = mapped_column(primary_key=True,nullable=False)
+    id: Mapped[int] = mapped_column(primary_key=True,nullable=False, autoincrement=True)
     name: Mapped[str] = mapped_column(String(256), nullable=False)
     number: Mapped[str] = mapped_column(String(256), nullable=False, unique=True)
     id_bank: Mapped[int] = mapped_column(ForeignKey("bank.id"), nullable=False)
@@ -105,7 +108,7 @@ class Agency(Base):
 class Bank(Base):
     __tablename__ = "bank"
     
-    id: Mapped[int] = mapped_column(primary_key=True,nullable=False)
+    id: Mapped[int] = mapped_column(primary_key=True,nullable=False, autoincrement=True)
     name: Mapped[str] = mapped_column(String(256), nullable=False)
     number: Mapped[str] = mapped_column(String(256), nullable=False, unique=True)
     
