@@ -1,7 +1,8 @@
-from ast import Add
-
-
-class Contact:
+if not __name__ == '__main__':
+    from src.models.entities.base import Base
+else:
+    from base import Base
+class Contact(Base):
     def __init__(self, 
                  id: int,
                  phone: str, 
@@ -35,7 +36,7 @@ class Contact:
         def email(self, email: str) -> None:
             self._email = email
 
-class Address:
+class Address(Base):
     def __init__(self, 
                  id: int,
                  cep: str,
@@ -80,7 +81,7 @@ class Address:
             self._number = number
                     
 
-class Client:
+class Client(Base):
     """
     Está classe representa a entidade Cliente no Sistema.
     

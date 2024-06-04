@@ -1,0 +1,2 @@
+STRING_OPTIONAL = "-"
+STRING_NULL = "null"

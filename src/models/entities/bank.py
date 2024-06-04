@@ -1,14 +1,13 @@
 from typing import List
 
 if not __name__ == '__main__':
-    import sys
-    from os.path import abspath, dirname
-    
-    sys.path.append(dirname(abspath(__file__)))
-    
+    from src.models.entities.agency import Agency
+    from src.models.entities.base import Base
+else:
     from agency import Agency
+    from base import Base
 
-class Bank:
+class Bank(Base):
     def __init__(self,
                  id: int,
                  name: str,

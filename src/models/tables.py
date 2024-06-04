@@ -19,6 +19,31 @@ class Base(DeclarativeBase):
         return f"{cls.__name__}({columns_str})"
 
 
+class Address(Base):
+    __tablename__ = "address"
+    
+    id: Mapped[int]  = mapped_column(Integer,primary_key=True)
+    cep: Mapped[str] = mapped_column(String, nullable=False)
+    street: Mapped[str] = mapped_column(String, nullable=False)
+    number: Mapped[str] = mapped_column(String, nullable=False)
+    
+    my_client: Mapped["Client"] = relationship("Client",
+                                               back_populates="my_address",
+                                               uselist=False,
+                                               )
+
+class Contact(Base):
+    __tablename__ = "contact"
+    
+    id: Mapped[int]  = mapped_column(Integer,primary_key=True)
+    phone: Mapped[str] = mapped_column(String(256), unique=True)
+    email: Mapped[str] = mapped_column(String(256), unique=True)
+    
+    my_client: Mapped["Client"] = relationship("Client",
+                                               back_populates="my_contact",
+                                               uselist=False,
+                                               )
+    
 class Client(Base):
     __tablename__ = "client"
 
@@ -32,6 +57,15 @@ class Client(Base):
                                                  uselist=False, # Assumindo que um cliente tem uma conta (um-para-um)
                                                  cascade="all, delete-orphan"
                                                 )
+    my_contact: Mapped["Contact"] = relationship("Contact",
+                                                 back_populates="my_client",
+                                                 uselist=False,
+                                                 cascade="all, delete-orphan")
+    
+    my_address: Mapped["Address"] = relationship("Address",
+                                                 back_populates="my_client",
+                                                 uselist=False,
+                                                 cascade="all, delete-orphan")
 
 class Account(Base):
     __tablename__ = "account"

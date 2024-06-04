@@ -1,10 +1,11 @@
-from src.models.tables import Account
 
 
 if not __name__ == "__main__":
+    from src.models.entities.account import Account
     from src.models.entities.bank import Bank
     from src.models.entities.base import Base
 else:
+    from account import Account
     from base import Base
     from bank import Bank
 
