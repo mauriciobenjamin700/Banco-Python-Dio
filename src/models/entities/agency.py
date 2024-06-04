@@ -13,13 +13,14 @@ class Agency(Base):
                  id: int, 
                  name: str,
                  number: str,
-                 bank: Bank):
+                 bank: Bank
+                 ) -> None:
         self._id = id
         self._name = name
         self._number = number
         self._bank = bank
         
-        self.accounts = [] # list of accounts that are associated with the account
+        self._accounts = [] # list of accounts that are associated with the account
         
     @property
     def id(self) -> int:
@@ -48,18 +49,28 @@ class Agency(Base):
     def add_account(self, new_account: Account) -> bool:
         
         if isinstance(new_account, Account):
-            if not any(account.id == new_account.id for account in self.accounts): # check if account already exists, if not exists, app
-                self.accounts.append(new_account)
+            if not any(account.id == new_account.id for account in self._accounts): # check if account already exists, if not exists, app
+                self._accounts.append(new_account)
                 return True
             
         return False
     
-    def remove_account(self, id: int) -> bool:
-        if len(self.accounts) != 0:
-            for account in self.accounts:
+    def search_account(self, id: int) -> Account | None:
+        
+        if len(self._accounts) != 0:
+            for account in self._accounts:
                 if account.id == id:
-                    del account
-                    return True
+                    return account
+        return None
+    
+    def remove_account(self, id: int) -> bool:
+        
+        account = self.search_account(id)
+        if account:
+            del account
+            return True
         
         return False
+    
+    
     
